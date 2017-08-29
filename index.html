@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>consoleShow - demo</title>
+</head>
+
+<body>
+  打开浏览器控制台
+  <ul id="test"></ul>
+
+<script src="consoleShow.js"></script>
+<script>
+  window.consoleShow.config();
+
+   // test 为扩展命令名
+  console.test('This is test 1.');
+
+  console.test('This is test 1.', 'This is test 1.1.', 'This is test 1.2.');
+
+  console.config({
+    "name": "@test1", // name  : 用于控制过滤 console 标记，默认为 test
+    "type": "log",    // type  ：console 默认命令名，默认为 log
+    "color": "#f50"   // color : 标题颜色，默认色 #ddd
+  }).test('This is test 2.');
+
+  console.api('This is api 1.');
+
+  console.api([
+    {a: 1, b: 1},
+    {a: 2, b: 2},
+    {a: 3, b: 3},
+    {a: 4, b: 4}
+  ]);
+
+  console.event('This is event 1.');
+
+  console.block('This is block 1.');
+
+  console.color('This is color.');
+
+  console.color('This is color.', "#f00");
+
+  console.plus({
+    "name": "demo1",
+    "content": "This is demo 1."
+  });
+
+  // 注意：当 content 参数为function 时，type 参数无效；
+  console.plus({
+    "name": "demo2",
+    "type": "table",
+    "content": "This is demo 2."
+  });
+
+  console.plus({
+    "name": "demo2.1",
+    "type": "table",
+    "content": [
+      {a: 1, b: 1},
+      {a: 2, b: 2},
+      {a: 3, b: 3},
+      {a: 4, b: 4}
+    ]
+  });
+
+  console.plus({
+    "name": "demo3",
+    "content": function() {
+      console.log("This is demo 3");
+      console.color('This is color.', "#f00");
+      console.event('This is event 1.');
+    }
+  });
+
+  var testLink = [
+    "console.show=api,event",
+    "console.hide=api,event",
+    "console.show=demo",
+    "console.hide=demo"
+  ];
+
+  var url = window.location.origin + window.location.pathname;
+  var html = "";
+
+  for (var i = 0; i < testLink.length; i++) {
+    html += '<li><a href="' + url + '?' + testLink[i] + '">' + testLink[i] + '</a></li>';
+  }
+
+  document.getElementById('test').innerHTML = html;
+</script>
+</body>
+
+</html>
