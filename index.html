@@ -6,15 +6,76 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>consoleShow - demo</title>
+  <style>
+    body, h3, ul, li, p{
+      padding: 0;
+      margin: 0;
+      font-size: 12px;
+    }
+    body {
+      background-size: 50px 50px; /* 控制条纹的大小 */
+      background-color: #ddd;
+      background-image: linear-gradient(45deg, rgba(255, 255, 255, .2) 25%, transparent 25%,
+                        transparent 50%, rgba(255, 255, 255, .2) 50%, rgba(255, 255, 255, .2) 75%,
+                        transparent 75%, transparent);
+    }
+    .bg {
+      position: fixed;
+      width: 400px;
+      top: 40%;
+      left: 50%;
+      margin: -220px 0 0 -200px;
+      border-radius: 8px;
+      background-color: #fff;
+      box-shadow: 5px 5px 20px #999;                  
+    }
+    h3 {
+      padding: 5px;
+      border-radius: 8px 8px 0 0;
+      font-size: 14px;
+      text-align: center;
+      background-color: #d8d8d8;
+      color: #24292e;
+    }
+    ul {
+      padding: 25px 40px;
+      border-radius:0 0 8px 8px;
+    }
+    li {
+      list-style: none;
+      margin-bottom: 10px;
+    }
+    a {
+      margin-top: 5px;
+      padding: 2px 20px;
+      display: block;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      color: #444;
+      text-align: center;
+      text-decoration: none;
+    }
+    a:active {
+      background-color:#0366d6;
+      border-color: #0366d6;
+      color: #fff;
+    }
+    span {
+      color: #f00;
+    }
+  </style>
 </head>
 
 <body>
-  打开浏览器控制台
-  <ul id="test"></ul>
-
+  <div class="bg">
+    <h3>打开浏览器控制台</h3>
+    <ul id="test"></ul>
+  </div>
 <script src="consoleShow.js"></script>
 <script>
-  window.consoleShow.config();
+  window.consoleShow.config({
+    clear: true
+  });
 
    // test 为扩展命令名
   console.test('This is test 1.');
@@ -39,10 +100,6 @@
   console.event('This is event 1.');
 
   console.block('This is block 1.');
-
-  console.color('This is color.');
-
-  console.color('This is color.', "#f00");
 
   console.plus({
     "name": "demo1",
@@ -71,23 +128,59 @@
     "name": "demo3",
     "content": function() {
       console.log("This is demo 3");
+
+      console.color('This is color.');
       console.color('This is color.', "#f00");
+
       console.event('This is event 1.');
     }
   });
 
   var testLink = [
-    "console.show=api,event",
-    "console.hide=api,event",
-    "console.show=demo",
-    "console.hide=demo"
+    {
+      param: "console.show=test",
+      explain: "显示所有 test 日志"
+    },
+    {
+      param: "console.hide=test",
+      explain: "隐藏所有 test 日志。"
+    },
+    {
+      param: "console.show=api,demo",
+      explain: "显示 api 和包含 demo 名的日志。"
+    },
+    {
+      param: "console.hide=api,demo",
+      explain: "隐藏 api 和包含 demo 名的日志。"
+    },
+    {
+      param: "",
+      explain: "显示全部。"
+    },
+    {
+      param: "console.show=***",
+      explain: "隐藏全部（参数不包含或等于设置的即可）。"
+    }
+
   ];
 
   var url = window.location.origin + window.location.pathname;
   var html = "";
 
   for (var i = 0; i < testLink.length; i++) {
-    html += '<li><a href="' + url + '?' + testLink[i] + '">' + testLink[i] + '</a></li>';
+    html += '<li>' +
+      '<p> 参数：' + 
+        '<span>' +
+          testLink[i].param +
+        '</span>' +
+      '</p>' +
+      '<p> 说明：' + 
+          (testLink[i].explain || '空') +
+      '</p>' +
+      '<a href="' + url + '?' + testLink[i].param + '">' + 
+          '设置过滤' +
+      '</a>' +
+    '</li>';
   }
 
   document.getElementById('test').innerHTML = html;

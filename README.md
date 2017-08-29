@@ -2,8 +2,12 @@
 
 快捷管理 console，支持自定义命令，支持 url 过滤命令
 
+![](./img/demo.gif)
 
-# 使用指南
+# 使用指南  
+
+演示地址:
+[http://pangxieju.github.io/consoleShow/index.html](http://pangxieju.github.io/consoleShow/index.html)
 
 * console.test  ：普通输出
 * console.api   ：输出接口相关信息
