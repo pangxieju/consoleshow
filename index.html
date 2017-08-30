@@ -27,7 +27,7 @@
       margin: -220px 0 0 -200px;
       border-radius: 8px;
       background-color: #fff;
-      box-shadow: 5px 5px 20px #999;                  
+      box-shadow: 5px 5px 20px #999;
     }
     h3 {
       padding: 5px;
@@ -83,9 +83,9 @@
   console.test('This is test 1.', 'This is test 1.1.', 'This is test 1.2.');
 
   console.config({
-    "name": "@test1", // name  : 用于控制过滤 console 标记，默认为 test
-    "type": "log",    // type  ：console 默认命令名，默认为 log
-    "color": "#f50"   // color : 标题颜色，默认色 #ddd
+    "name": "@test1", // 用于控制过滤 console 标记，默认为 test
+    "type": "log",    // console 默认命令名，默认为 log
+    "color": "#f50"   // 标题颜色，默认色 #ddd
   }).test('This is test 2.');
 
   console.api('This is api 1.');
@@ -169,15 +169,15 @@
 
   for (var i = 0; i < testLink.length; i++) {
     html += '<li>' +
-      '<p> 参数：' + 
+      '<p> 参数：' +
         '<span>' +
           testLink[i].param +
         '</span>' +
       '</p>' +
-      '<p> 说明：' + 
+      '<p> 说明：' +
           (testLink[i].explain || '空') +
       '</p>' +
-      '<a href="' + url + '?' + testLink[i].param + '">' + 
+      '<a href="' + url + '?' + testLink[i].param + '">' +
           '设置过滤' +
       '</a>' +
     '</li>';

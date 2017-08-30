@@ -4,7 +4,7 @@
 
 ![](./img/demo.gif)
 
-# 使用指南  
+# 使用指南
 
 演示地址:
 [http://pangxieju.github.io/consoleShow/index.html](http://pangxieju.github.io/consoleShow/index.html)
@@ -38,17 +38,22 @@
   // 扩展命令
   window.consoleShow.init({
     extend: [{
-      name: "api",     // name  : 用于控制过滤 console 标记，默认为 test
-      type: "table",   // type  ：console 默认命令名，默认为 log
-      color: "#fff3cf" // color : 标题颜色，默认色 #ddd
+      name: "api",     // 用于控制过滤 console 标记，默认为 test
+      type: "table",   // console 默认命令名，默认为 log
+      color: "#fff3cf" // 标题颜色，默认色 #ddd
     }]
+  });
+
+  // 内联配置
+  window.consoleShow.init({
+    inlineConfig: true  // 用于设置内联，链式设置
   });
 ```
 ### 注意：
 
 1、扩展 name 参数不允许与 console 命令和扩展命令名相同；
 
-console 命令："debug", "error", "info", "log", "warn", "dir", "dirxml", "table", "trace", "group", "groupCollapsed", "groupEnd", "clear", "count", "assert", "markTimeline", "profile", "profileEnd", "timeline", "timelineEnd", "time", "timeEnd", "timeStamp", "memory"；
+console 命令："debug", "error", "info", "log", "warn", "dir", "dirxml", "table", "trace", "group", "groupCollapsed", "groupEnd", "clear", "count", "assert", "markTimeline", "profile", "profileEnd", "timeline", "timelineEnd", "time", "timeEnd", "timeStamp", "memory"；（Chrom 浏览器）
 
 扩展命令： "test", "event", "api", "block", "color", "plus"；
 
@@ -78,11 +83,36 @@ url 过滤 console：
 
   console.test('This is test 1.', 'This is test 1.1.', 'This is test 1.2.');
 
+  // 内联配置(默认内联配置)
+  console.test('This is test 2.', {
+    config: {
+      "name": "@test1",  // 用于控制过滤 console 标记，默认为 test
+      "type": "log",     // console 默认命令名，默认为 log
+      "color": "#f50"    // 标题颜色，默认色 #ddd
+    }
+  });
+
+  // 链式配置
   console.config({
-    "name": "@test1",  // name  : 用于控制过滤 console 标记，默认为 test
-    "type": "log",     // type  ：console 默认命令名，默认为 log
-    "color": "#f50"    // color : 标题颜色，默认色 #ddd
+    "name": "@test1",  // 用于控制过滤 console 标记，默认为 test
+    "type": "log",     // console 默认命令名，默认为 log
+    "color": "#f50"    // 标题颜色，默认色 #ddd
   }).test('This is test 2.');
+```
+### 注意：
+
+在 webpack 输出中可以配置不生成 console ，一般用于打包到正式；如果在初始化配置中配置 inlineConfig: false ，打包正式后控制台会报错。
+
+```js
+   // 内联配置
+  window.consoleShow.init({
+    inlineConfig: false  // 开启链式配置
+  });
+
+  // webpack2-3x UglifyJsPlugin 配置
+  compressor: {
+    drop_console: true // 打包清除 console
+  }
 ```
 
 2、color 命令：console.color(string, color);

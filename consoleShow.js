@@ -1,5 +1,5 @@
 /*!
- *  consoleShow v1.0.0 By pangxieju
+ *  consoleShow v1.0.1 By pangxieju
  *  Github: https://github.com/pangxieju/consoleShow
  *  MIT Licensed.
  */
@@ -7,6 +7,7 @@ var consoleShow = {
   settings: {
     hide: [],
     show: [],
+    inlineConfig: true,
     extend: [],
     clear: false
   },
@@ -61,12 +62,15 @@ var consoleShow = {
     var settings = this.settings;
     var consoleKey = methods.getConsoleKey();
     try {
-      console["config"] = function(config) {
-        this.configs = config;
-        return this;
-      };
+      if (!settings.inlineConfig) {
+        console["config"] = function(config) {
+          this.configs = config;
+          return this;
+        };
+      }
 
       //////////////////////////////////////////////////////////////////////////
+
       var extend = this.settings.extend;
       var member = {};
       var config = {};
@@ -77,18 +81,30 @@ var consoleShow = {
 
         (function(name, color, type) {
           console[name] = function() {
-            if (methods.filterConsole(settings, name)) {
-              this.configs = {};
-              return;
+            config = {
+              name: "test",
+              type: "log",
+              color: "#ddd"
+            };
+            var getConfig = '';
+
+            if (settings.inlineConfig) {
+              getConfig = methods.getInlineConfig(arguments, config);
+              config = getConfig || config;
+            } else {
+              if (this.configs === undefined) this.configs = {};
+
+              for (var i in this.configs) {
+                if (this.configs.hasOwnProperty(i)) {
+                  config[i] = this.configs[i];
+                }
+              }
             }
 
-            if (this.configs === undefined) this.configs = {};
-
-            config = {
-              name: this.configs.name || name || "test",
-              type: this.configs.type || type || "log",
-              color: this.configs.color || color || "#ddd"
-            };
+            if (methods.filterConsole(settings, config.name || name)) {
+              if (!settings.inlineConfig) this.configs = {};
+              return;
+            }
 
             this.group("%c" + config.name, methods.outputStyle(config.color));
 
@@ -96,10 +112,15 @@ var consoleShow = {
               config.type = "log";
             };
 
+            if (settings.inlineConfig && getConfig) {
+              arguments.length = arguments.length - 1;
+            } else {
+              this.configs = {};
+            };
+
             this[config.type].apply(this, arguments);
             this.groupEnd();
 
-            this.configs = {};
             return this;
           };
         })(
@@ -110,6 +131,7 @@ var consoleShow = {
       }
 
       //////////////////////////////////////////////////////////////////////////
+
       console["color"] = function (content, color) {
         if (content === "") return;
 
@@ -118,6 +140,7 @@ var consoleShow = {
       };
 
       //////////////////////////////////////////////////////////////////////////
+
       console["plus"] = function(param) {
         var name = param.name || "test";
         if (methods.filterConsole(settings, name)) return;
@@ -152,6 +175,22 @@ var consoleShow = {
     }
   },
   methods: {
+    getInlineConfig: function(param, config) {
+      var paramLength = param.length;
+
+      if (paramLength > 1 && param[paramLength - 1].config !== undefined) {
+        var paramConfig = param[paramLength - 1].config;
+
+        for (var i in paramConfig) {
+          if (paramConfig.hasOwnProperty(i)) {
+            config[i] = paramConfig[i];
+          }
+        }
+
+        return config;
+      }
+      return '';
+    },
     getConsoleKey: function () {
       var consoleKey = [];
       for (var key in console) {
