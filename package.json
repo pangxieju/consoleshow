@@ -1,14 +1,14 @@
 {
   "name": "consoleshow",
-  "version": "1.0.1",
-  "main": "consoleShow.js",
+  "version": "1.1.1",
+  "main": "index.js",
   "description": "Easy debugging in development.",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/pangxieju/consoleShow"
+    "url": "https://github.com/pangxieju/consoleshow"
   },
   "keywords": [
     "console",

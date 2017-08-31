@@ -1,13 +1,25 @@
-# consoleShow
+consoleShow
+==============================
+[![npm version](https://badge.fury.io/js/consoleshow.svg)](https://badge.fury.io/js/consoleshow)
 
 快捷管理 console，支持自定义命令，支持 url 过滤命令
 
+
 ![](./img/demo.gif)
 
-# 使用指南
+## 使用指南
+
+安装：
+
+```js
+  npm install consoleshow
+```
 
 演示地址:
-[http://pangxieju.github.io/consoleShow/index.html](http://pangxieju.github.io/consoleShow/index.html)
+
+[http://pangxieju.github.io/consoleshow/index.html](http://pangxieju.github.io/consoleshow/index.html)
+
+扩展命令：
 
 * console.test  ：普通输出
 * console.api   ：输出接口相关信息
@@ -18,25 +30,25 @@
 
 ```js
   // 默认初始化
-  window.consoleShow.init();
+  window.consoleShow.config();
 
   // 清除控制台信息
-  window.consoleShow.init({
+  window.consoleShow.config({
     clear: true
   });
 
   // 显示指定 console
-  window.consoleShow.init({
+  window.consoleShow.config({
     show: [name_1, name_2]
   });
 
   // 隐藏指定 console
-  window.consoleShow.init({
+  window.consoleShow.config({
     hide: [name_1, name_2]
   });
 
   // 扩展命令
-  window.consoleShow.init({
+  window.consoleShow.config({
     extend: [{
       name: "api",     // 用于控制过滤 console 标记，默认为 test
       type: "table",   // console 默认命令名，默认为 log
@@ -45,7 +57,7 @@
   });
 
   // 内联配置
-  window.consoleShow.init({
+  window.consoleShow.config({
     inlineConfig: true  // 用于设置内联，链式设置
   });
 ```
@@ -73,7 +85,7 @@ url 过滤 console：
   http://xxx.com?console.hide=name_1,name_2
 ```
 
-## 扩展命令
+### 扩展命令
 
 1、test, api, event, block 命令：console.config({options}).`[name]`();
 
@@ -105,7 +117,7 @@ url 过滤 console：
 
 ```js
    // 内联配置
-  window.consoleShow.init({
+  window.consoleShow.config({
     inlineConfig: false  // 开启链式配置
   });
 
@@ -145,5 +157,5 @@ url 过滤 console：
     }
   })
 ```
-# License
+## License
 This content is released under the [MIT](http://opensource.org/licenses/MIT) License.
