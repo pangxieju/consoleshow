@@ -61,15 +61,15 @@ consoleShow
     inlineConfig: true  // 用于设置内联，链式设置
   });
 ```
-### 注意：
+#### 注意：
 
 1、扩展 name 参数不允许与 console 命令和扩展命令名相同；
 
-console 命令："debug", "error", "info", "log", "warn", "dir", "dirxml", "table", "trace", "group", "groupCollapsed", "groupEnd", "clear", "count", "assert", "markTimeline", "profile", "profileEnd", "timeline", "timelineEnd", "time", "timeEnd", "timeStamp", "memory"；（Chrom 浏览器）
+- console 命令："debug", "error", "info", "log", "warn", "dir", "dirxml", "table", "trace", "group", "groupCollapsed", "groupEnd", "clear", "count", "assert", "markTimeline", "profile", "profileEnd", "timeline", "timelineEnd", "time", "timeEnd", "timeStamp", "memory"；（Chrom 浏览器）
 
-扩展命令： "test", "event", "api", "block", "color", "plus"；
+- 扩展命令： "test", "event", "api", "block", "color", "plus"；
 
-如果与 console 命令名相同，name 会取默认参数 test；如果与扩展命令名相同，会覆盖重名扩展设置。
+- 如果与 console 命令名相同，name 会取默认参数 test；如果与扩展命令名相同，会覆盖重名扩展设置。
 
 2、扩展 color 属性只支持 16 进制颜色。
 
@@ -111,9 +111,9 @@ url 过滤 console：
     "color": "#f50"    // 标题颜色，默认色 #ddd
   }).test('This is test 2.');
 ```
-### 注意：
+#### 注意：
 
-在 webpack 输出中可以配置不生成 console ，一般用于打包到正式；如果在初始化配置中配置 inlineConfig: false ，打包正式后控制台会报错。
+在 webpack 输出中可以配置不生成 console ，一般用于打包到正式；如果在初始化配置中配置 `inlineConfig: false` ，打包正式后控制台会报错。
 
 ```js
    // 内联配置

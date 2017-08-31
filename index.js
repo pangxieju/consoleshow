@@ -1,5 +1,5 @@
 /*!
- *  consoleShow v1.1.1 By pangxieju
+ *  consoleShow v1.1.2 By pangxieju
  *  Github: https://github.com/pangxieju/consoleShow
  *  MIT Licensed.
  */
