@@ -1,5 +1,5 @@
 /*!
- *  consoleShow v1.1.2 By pangxieju
+ *  consoleShow v1.2.0 By pangxieju
  *  Github: https://github.com/pangxieju/consoleShow
  *  MIT Licensed.
  */
@@ -33,6 +33,7 @@ var consoleShow = {
         color: "#fcdbd9"
       }
     ];
+
     var settings = this.settings;
     for (var i in config) {
       if (config.hasOwnProperty(i)) {
@@ -40,8 +41,9 @@ var consoleShow = {
       }
     }
 
-    settings.urlShow = this.methods.getParameterByName("console.show") || "";
-    settings.urlHide = this.methods.getParameterByName("console.hide") || "";
+    var getParamVal = this.methods.getParamVal;
+    settings.urlShow = getParamVal("console.show") || "";
+    settings.urlHide = getParamVal("console.hide") || "";
 
     if (!settings.extend && settings.extend.length === 0) {
       settings.extend = defaultExtend;
@@ -54,13 +56,18 @@ var consoleShow = {
     this.init();
 
     window.onhashchange = function() {
-      window.location.reload();
+      var hash = window.location.hash;
+
+      if (hash.indexOf("console.show") !== -1 || hash.indexOf("console.hide") !== -1) {
+        window.location.reload();
+      }
     };
   },
   init: function() {
     var methods = this.methods;
     var settings = this.settings;
     var consoleKey = methods.getConsoleKey();
+
     try {
       if (!settings.inlineConfig) {
         console["config"] = function(config) {
@@ -78,47 +85,45 @@ var consoleShow = {
       for (var i = 0; i < extend.length; i++) {
         member = extend[i];
         member.name = consoleKey.indexOf(member.name) !== -1 ? "test" : member.name;
+        member.color = member.color || "#ddd";
+        member.type = member.type || "log";
 
         (function(name, color, type) {
           console[name] = function() {
             config = {
-              name: "test",
-              type: "log",
-              color: "#ddd"
+              name: name,
+              type: color,
+              color: type
             };
+
             var getConfig = '';
 
             if (settings.inlineConfig) {
               getConfig = methods.getInlineConfig(arguments, config);
-              config = getConfig || config;
             } else {
               if (this.configs === undefined) this.configs = {};
-
-              for (var i in this.configs) {
-                if (this.configs.hasOwnProperty(i)) {
-                  config[i] = this.configs[i];
-                }
-              }
+              getConfig =  this.configs;
             }
 
-            if (methods.filterConsole(settings, config.name || name)) {
+            if (methods.filterConsole(settings, getConfig.name || name)) {
               if (!settings.inlineConfig) this.configs = {};
               return;
             }
 
-            this.group("%c" + config.name, methods.outputStyle(config.color));
-
-            if (config.name === "api" && typeof arguments[0] === "string") {
-              config.type = "log";
-            };
+            this.group("%c" + (getConfig.name || name), methods.outputStyle(getConfig.color || color));
 
             if (settings.inlineConfig && getConfig) {
               arguments.length = arguments.length - 1;
             } else {
               this.configs = {};
-            };
+            }
 
-            this[config.type].apply(this, arguments);
+            if (name === "api" && typeof arguments[0] === "string") {
+              this["log"].apply(this, arguments);
+            } else {
+              this[getConfig.type || type].apply(this, arguments);
+            }
+
             this.groupEnd();
 
             return this;
@@ -257,7 +262,7 @@ var consoleShow = {
       'font-weight: 600;color: #666;' +
       'text-transform: capitalize';
     },
-    getParameterByName: function (name, url) {
+    getParamVal: function (name, url) {
       if (!url) url = window.location.href;
       name = name.replace(/[\[\]]/g, "\\$&");
       var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)");

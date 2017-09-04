@@ -99,6 +99,7 @@
 <script src="index.js"></script>
 <script>
   window.consoleShow.config({
+    inlineConfig: false,
     clear: true
   });
 
@@ -114,6 +115,12 @@
       "color": "#f50"   // 标题颜色，默认色 #ddd
     }
   });
+
+  // console.config({
+  //   "name": "@test1", // 用于控制过滤 console 标记，默认为 test
+  //   "type": "log",    // console 默认命令名，默认为 log
+  //   "color": "#f50"   // 标题颜色，默认色 #ddd
+  // }).test('This is test 3.');
 
   console.api('This is api 1.');
 
