@@ -87,7 +87,7 @@ url 过滤 console：
 
 ### 扩展命令
 
-1、test, api, event, block 命令：console.config({options}).`[name]`();
+1、test, api, event, block 命令;
 
 ```js
   // test 为扩展命令名

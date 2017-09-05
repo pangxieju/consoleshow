@@ -1,5 +1,5 @@
 /*!
- *  consoleShow v1.2.0 By pangxieju
+ *  consoleShow v1.2.1 By pangxieju
  *  Github: https://github.com/pangxieju/consoleShow
  *  MIT Licensed.
  */
@@ -25,7 +25,6 @@ var consoleShow = {
       },
       {
         name: "api",
-        type: "table",
         color: "#cfefdf"
       },
       {
@@ -92,8 +91,8 @@ var consoleShow = {
           console[name] = function() {
             config = {
               name: name,
-              type: color,
-              color: type
+              type: type,
+              color: color
             };
 
             var getConfig = '';
@@ -102,15 +101,14 @@ var consoleShow = {
               getConfig = methods.getInlineConfig(arguments, config);
             } else {
               if (this.configs === undefined) this.configs = {};
-              getConfig =  this.configs;
+              getConfig = this.configs;
             }
 
-            if (methods.filterConsole(settings, getConfig.name || name)) {
+            if (methods.filterConsole(settings, name) ||
+              getConfig.name && methods.filterConsole(settings, getConfig.name)) {
               if (!settings.inlineConfig) this.configs = {};
               return;
             }
-
-            this.group("%c" + (getConfig.name || name), methods.outputStyle(getConfig.color || color));
 
             if (settings.inlineConfig && getConfig) {
               arguments.length = arguments.length - 1;
@@ -118,11 +116,14 @@ var consoleShow = {
               this.configs = {};
             }
 
-            if (name === "api" && typeof arguments[0] === "string") {
-              this["log"].apply(this, arguments);
-            } else {
-              this[getConfig.type || type].apply(this, arguments);
+            var configName = name;
+            if (getConfig.name !== undefined) {
+              configName += " " + getConfig.name;
             }
+
+            this.group("%c" + configName, methods.outputStyle(getConfig.color || color));
+
+            this[getConfig.type || type].apply(this, arguments);
 
             this.groupEnd();
 

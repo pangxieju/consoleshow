@@ -1,6 +1,6 @@
 {
   "name": "consoleshow",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "main": "index.js",
   "description": "Easy debugging in development.",
   "scripts": {
