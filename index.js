@@ -1,5 +1,5 @@
 /*!
- *  consoleShow v1.2.1 By pangxieju
+ *  consoleShow v1.2.2 By pangxieju
  *  Github: https://github.com/pangxieju/consoleShow
  *  MIT Licensed.
  */
@@ -230,7 +230,7 @@ var consoleShow = {
       if (showNum === 0 && isName(hideData, name)) return true;
 
       // Set up show name.
-      if (showNum !== 0 && !isName(showData, name)) return true;
+      if (showNum !== 0 && isName(showData, name)) return false;
 
       return false;
     },

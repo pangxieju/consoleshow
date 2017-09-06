@@ -113,17 +113,26 @@ url 过滤 console：
 ```
 #### 注意：
 
-在 webpack 输出中可以配置不生成 console ，一般用于打包到正式；如果在初始化配置中配置 `inlineConfig: false` ，打包正式后控制台会报错。
+在 webpack 中可以配置是否生成 console ；一般开发环境显示 console 方便调试，正式不显示；相关配置如下：
 
 ```js
    // 内联配置
   window.consoleShow.config({
-    inlineConfig: false  // 开启链式配置
+    inlineConfig: false  // 开启链式配置，相应内联配置无效
   });
+
+  // webpack2-3x 入口配置
+  entry: {
+    index: [
+      '../src/index.js',
+      '../node_modules/consoleshow/index.js' // 可以通过 process.env.NODE_ENV 来控制是否输出
+    ]
+  }
 
   // webpack2-3x UglifyJsPlugin 配置
   compressor: {
-    drop_console: true // 打包清除 console
+    drop_console: true, // 清除 console
+    pure_funcs: ['window.consoleShow.config', 'console.config'] // 打包过滤
   }
 ```
 
