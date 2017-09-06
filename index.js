@@ -1,5 +1,5 @@
 /*!
- *  consoleShow v1.2.2 By pangxieju
+ *  consoleShow v1.2.3 By pangxieju
  *  Github: https://github.com/pangxieju/consoleShow
  *  MIT Licensed.
  */
@@ -34,6 +34,7 @@ var consoleShow = {
     ];
 
     var settings = this.settings;
+
     for (var i in config) {
       if (config.hasOwnProperty(i)) {
         settings[i] = config[i];
@@ -52,15 +53,16 @@ var consoleShow = {
 
     !settings.clear || console.clear();
 
-    this.init();
-
     window.onhashchange = function() {
       var hash = window.location.hash;
+      !settings.clear || console.clear();
 
       if (hash.indexOf("console.show") !== -1 || hash.indexOf("console.hide") !== -1) {
         window.location.reload();
       }
     };
+
+    this.init();
   },
   init: function() {
     var methods = this.methods;
@@ -104,8 +106,7 @@ var consoleShow = {
               getConfig = this.configs;
             }
 
-            if (methods.filterConsole(settings, name) ||
-              getConfig.name && methods.filterConsole(settings, getConfig.name)) {
+            if (methods.filterConsole(settings, name + getConfig.name)) {
               if (!settings.inlineConfig) this.configs = {};
               return;
             }
@@ -153,7 +154,7 @@ var consoleShow = {
 
         var type = consoleKey.indexOf(param.type) !== -1 ? this[param.type] : this.log;
 
-        this.group("%c" + name, methods.outputStyle("#d2eafb"));
+        this.group("%c" + name, methods.outputStyle(param.color || "#d2eafb"));
 
         switch (typeof param.content) {
           case "function":
@@ -226,13 +227,13 @@ var consoleShow = {
         return false;
       };
 
-      // Set up hide name.
-      if (showNum === 0 && isName(hideData, name)) return true;
+      // Set up hide name.Set up show name.
+      if (showNum === 0) {
+        if (isName(hideData, name)) return true;
+      } else {
+        if (!isName(showData, name)) return true;
+      }
 
-      // Set up show name.
-      if (showNum !== 0 && isName(showData, name)) return false;
-
-      return false;
     },
     setColorRgb: function (sColor) {
       var reg = /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/;
