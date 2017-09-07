@@ -98,8 +98,11 @@
   </div>
 <script src="index.js"></script>
 <script>
-  window.consoleShow.config({
+  SetTestHTML();
+
+  window.consoleshow.config({
     // inlineConfig: false,
+    collapsed: false, // 是否折叠 console
     clear: true
   });
 
@@ -170,54 +173,56 @@
     }
   });
 
-  var testLink = [
-    {
-      param: "console.show=test",
-      explain: "显示所有 test 日志"
-    },
-    {
-      param: "console.hide=test",
-      explain: "隐藏所有 test 日志"
-    },
-    {
-      param: "console.show=api,demo",
-      explain: "显示 api 和包含 demo 名的日志"
-    },
-    {
-      param: "console.hide=api,demo",
-      explain: "隐藏 api 和包含 demo 名的日志"
-    },
-    {
-      param: "",
-      explain: "显示全部"
-    },
-    {
-      param: "console.show=***",
-      explain: "隐藏全部（参数不包含或等于设置的即可）"
+  function SetTestHTML() {
+    var testLink = [
+      {
+        param: "console.show=test",
+        explain: "显示所有 test 日志"
+      },
+      {
+        param: "console.hide=test",
+        explain: "隐藏所有 test 日志"
+      },
+      {
+        param: "console.show=api,demo",
+        explain: "显示 api 和包含 demo 名的日志"
+      },
+      {
+        param: "console.hide=api,demo",
+        explain: "隐藏 api 和包含 demo 名的日志"
+      },
+      {
+        param: "",
+        explain: "显示全部"
+      },
+      {
+        param: "console.show=***",
+        explain: "隐藏全部（参数不包含或等于设置的即可）"
+      }
+
+    ];
+
+    var url = window.location.origin + window.location.pathname;
+    var html = "";
+
+    for (var i = 0; i < testLink.length; i++) {
+      html += '<li>' +
+        '<p> 参数：' +
+          '<span>' +
+            (testLink[i].param || '空')+
+          '</span>' +
+        '</p>' +
+        '<p> 说明：' +
+            testLink[i].explain +
+        '</p>' +
+        '<a href="' + url + '?' + testLink[i].param + '">' +
+            '设置过滤' +
+        '</a>' +
+      '</li>';
     }
 
-  ];
-
-  var url = window.location.origin + window.location.pathname;
-  var html = "";
-
-  for (var i = 0; i < testLink.length; i++) {
-    html += '<li>' +
-      '<p> 参数：' +
-        '<span>' +
-          (testLink[i].param || '空')+
-        '</span>' +
-      '</p>' +
-      '<p> 说明：' +
-          testLink[i].explain +
-      '</p>' +
-      '<a href="' + url + '?' + testLink[i].param + '">' +
-          '设置过滤' +
-      '</a>' +
-    '</li>';
+    document.getElementById('test').innerHTML = html;
   }
-
-  document.getElementById('test').innerHTML = html;
 </script>
 </body>
 

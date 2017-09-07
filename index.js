@@ -1,13 +1,14 @@
 /*!
- *  consoleShow v1.2.3 By pangxieju
- *  Github: https://github.com/pangxieju/consoleShow
+ *  consoleShow v1.3.0 By pangxieju
+ *  Github: https://github.com/pangxieju/consoleshow
  *  MIT Licensed.
  */
-var consoleShow = {
+var consoleshow = {
   settings: {
     hide: [],
     show: [],
     inlineConfig: true,
+    collapsed: true,
     extend: [],
     clear: false
   },
@@ -85,9 +86,11 @@ var consoleShow = {
 
       for (var i = 0; i < extend.length; i++) {
         member = extend[i];
-        member.name = consoleKey.indexOf(member.name) !== -1 ? "test" : member.name;
-        member.color = member.color || "#ddd";
-        member.type = member.type || "log";
+        member = {
+          name: consoleKey.indexOf(member.name) !== -1 ? "test" : member.name,
+          type: member.type || "log",
+          color: member.color || "#ddd"
+        };
 
         (function(name, color, type) {
           console[name] = function() {
@@ -122,7 +125,11 @@ var consoleShow = {
               configName += " " + getConfig.name;
             }
 
-            this.group("%c" + configName, methods.outputStyle(getConfig.color || color));
+            if (settings.collapsed) {
+              this.groupCollapsed("%c" + configName, methods.outputStyle(getConfig.color || color));
+            } else {
+              this.group("%c" + configName, methods.outputStyle(getConfig.color || color));
+            }
 
             this[getConfig.type || type].apply(this, arguments);
 
@@ -149,29 +156,39 @@ var consoleShow = {
       //////////////////////////////////////////////////////////////////////////
 
       console["plus"] = function(param) {
-        var name = param.name || "test";
+        var plus = {
+          name: param.name || "",
+          type: consoleKey.indexOf(param.type) !== -1 ? param.type : "log",
+          color: param.color || "#d2eafb",
+          content: param.content
+        };
+
+        var name = 'plus' + ' ' + plus.name;
+
         if (methods.filterConsole(settings, name)) return;
 
-        var type = consoleKey.indexOf(param.type) !== -1 ? this[param.type] : this.log;
+        if (settings.collapsed) {
+          this.groupCollapsed("%c" + name, methods.outputStyle(plus.color || "#d2eafb"));
+        } else {
+          this.group("%c" + name, methods.outputStyle(plus.color || "#d2eafb"));
+        }
 
-        this.group("%c" + name, methods.outputStyle(param.color || "#d2eafb"));
-
-        switch (typeof param.content) {
+        switch (typeof plus.content) {
           case "function":
-            param.content();
+            plus.content();
             break;
           case "object":
-            type(param.content);
+            this[plus.type](plus.content);
             break;
           case "string":
-            if (param.type === "table") {
-              this.log(param.content);
+            if (plus.type === "table") {
+              this.log(plus.content);
             } else {
-              type(param.content);
+              this[plus.type](plus.content);
             }
             break;
           default:
-            this.log(param.content);
+            this.log(plus.content);
             break;
         }
 
@@ -218,7 +235,7 @@ var consoleShow = {
       }
 
       var showNum = showData ? showData.length : 0;
-      // Match name.
+
       function isName(data, name) {
         if (data.indexOf(name) !== -1) return true;
         for (var i = 0; i < data.length; i++) {
@@ -227,7 +244,6 @@ var consoleShow = {
         return false;
       };
 
-      // Set up hide name.Set up show name.
       if (showNum === 0) {
         if (isName(hideData, name)) return true;
       } else {
@@ -275,4 +291,4 @@ var consoleShow = {
     }
   }
 };
-window.consoleShow = consoleShow;
+window.consoleshow = consoleshow;

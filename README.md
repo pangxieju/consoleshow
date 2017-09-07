@@ -1,8 +1,8 @@
-consoleShow
+consoleshow
 ==============================
 [![npm version](https://badge.fury.io/js/consoleshow.svg)](https://badge.fury.io/js/consoleshow)
 
-快捷管理 console，支持自定义命令，支持 url 过滤命令
+快捷管理 console，自定义命令，url 过滤命令
 
 
 ![](./img/demo.gif)
@@ -30,25 +30,30 @@ consoleShow
 
 ```js
   // 默认初始化
-  window.consoleShow.config();
+  window.consoleshow.config();
 
   // 清除控制台信息
-  window.consoleShow.config({
-    clear: true
+  window.consoleshow.config({
+    clear: true // url 改变时清除控制台信息
+  });
+
+  // 是否折叠控制台信息
+  window.consoleshow.config({
+    collapsed: false // 默认值为 true ，折叠显示控制台信息
   });
 
   // 显示指定 console
-  window.consoleShow.config({
+  window.consoleshow.config({
     show: [name_1, name_2]
   });
 
   // 隐藏指定 console
-  window.consoleShow.config({
+  window.consoleshow.config({
     hide: [name_1, name_2]
   });
 
   // 扩展命令
-  window.consoleShow.config({
+  window.consoleshow.config({
     extend: [{
       name: "api",     // 用于控制过滤 console 标记，默认为 test
       type: "table",   // console 默认命令名，默认为 log
@@ -57,7 +62,7 @@ consoleShow
   });
 
   // 内联配置
-  window.consoleShow.config({
+  window.consoleshow.config({
     inlineConfig: true  // 用于设置内联，链式设置
   });
 ```
@@ -84,6 +89,8 @@ url 过滤 console：
   // 隐藏当前页面指定 console
   http://xxx.com?console.hide=name_1,name_2
 ```
+
+url 过滤参数会覆盖初始化参数里的过滤信息。
 
 ### 扩展命令
 
@@ -113,11 +120,11 @@ url 过滤 console：
 ```
 #### 注意：
 
-在 webpack 中可以配置是否生成 console ；一般开发环境显示 console 方便调试，正式不显示；相关配置如下：
+在 webpack 中可以配置是否在正式代码中过滤 console ；一般开发环境是要显示 console 方便调试，正式不显示；相关配置如下：
 
 ```js
    // 内联配置
-  window.consoleShow.config({
+  window.consoleshow.config({
     inlineConfig: false  // 开启链式配置，相应内联配置无效
   });
 
@@ -132,7 +139,7 @@ url 过滤 console：
   // webpack2-3x UglifyJsPlugin 配置
   compressor: {
     drop_console: true, // 清除 console
-    pure_funcs: ['window.consoleShow.config', 'console.config'] // 打包过滤
+    pure_funcs: ['window.consoleshow.config', 'console.config' + .命令名] // 打包过滤
   }
 ```
 

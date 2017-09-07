@@ -1,6 +1,6 @@
 {
   "name": "consoleshow",
-  "version": "1.2.3",
+  "version": "1.3.0",
   "main": "index.js",
   "description": "Easy debugging in development.",
   "scripts": {
@@ -19,6 +19,6 @@
   "author": "pangxieju",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/pangxieju/consoleShow/issues/new"
+    "url": "https://github.com/pangxieju/consoleshow/issues/new"
   }
 }
