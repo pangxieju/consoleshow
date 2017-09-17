@@ -101,7 +101,6 @@
   SetTestHTML();
 
   window.consoleshow.config({
-    // inlineConfig: false,
     collapsed: false, // 是否折叠 console
     clear: true
   });
@@ -119,12 +118,6 @@
     }
   });
 
-  // console.config({
-  //   "name": "@test1", // 用于控制过滤 console 标记，默认为 test
-  //   "type": "log",    // console 默认命令名，默认为 log
-  //   "color": "#f50"   // 标题颜色，默认色 #ddd
-  // }).test('This is test 3.');
-
   console.api('This is api 1.');
 
   console.api([
@@ -132,7 +125,11 @@
     {a: 2, b: 2},
     {a: 3, b: 3},
     {a: 4, b: 4}
-  ]);
+  ],{
+    config: {
+      type: "table"
+    }
+  });
 
   console.event('This is event 1.');
 

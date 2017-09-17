@@ -7,7 +7,6 @@ var consoleshow = {
   settings: {
     hide: [],
     show: [],
-    inlineConfig: true,
     collapsed: true,
     extend: [],
     clear: false
@@ -18,19 +17,34 @@ var consoleshow = {
     var defaultExtend = [
       {
         name: "test",
-        color: "#ddd"
+        color: "#ddd",
+        group: true
       },
       {
         name: "event",
-        color: "#fff3cf"
+        color: "#ffffcc",
+        group: true
       },
       {
         name: "api",
-        color: "#cfefdf"
+        color: "#ccffcc",
+        group: true
       },
       {
         name: "block",
-        color: "#fcdbd9"
+        color: "#ffcccc",
+        group: true
+      },
+      {
+        name: "data",
+        color: "#ccccff",
+        group: true
+      },
+      {
+        name: "tag",
+        type: "trace",
+        color: "#66cccc",
+        group: false
       }
     ];
 
@@ -71,87 +85,96 @@ var consoleshow = {
     var consoleKey = methods.getConsoleKey();
 
     try {
-      if (!settings.inlineConfig) {
-        console["config"] = function(config) {
-          this.configs = config;
-          return this;
-        };
-      }
-
-      //////////////////////////////////////////////////////////////////////////
-
       var extend = this.settings.extend;
       var member = {};
-      var config = {};
 
       for (var i = 0; i < extend.length; i++) {
-        member = extend[i];
+        var member = extend[i];
+        
         member = {
           name: consoleKey.indexOf(member.name) !== -1 ? "test" : member.name,
           type: member.type || "log",
-          color: member.color || "#ddd"
+          color: member.color || "#ddd",
+          group: member.group ? true : false
         };
 
-        (function(name, color, type) {
+        (function(name, color, type, group) {
           console[name] = function() {
-            config = {
-              name: name,
-              type: type,
-              color: color
-            };
+            var getConfig = methods.getConfig(arguments, member);
 
-            var getConfig = '';
+            if (methods.filterConsole(settings, name + getConfig.name)) return;
 
-            if (settings.inlineConfig) {
-              getConfig = methods.getInlineConfig(arguments, config);
-            } else {
-              if (this.configs === undefined) this.configs = {};
-              getConfig = this.configs;
-            }
-
-            if (methods.filterConsole(settings, name + getConfig.name)) {
-              if (!settings.inlineConfig) this.configs = {};
-              return;
-            }
-
-            if (settings.inlineConfig && getConfig) {
+            if (getConfig) {
               arguments.length = arguments.length - 1;
+
+              if (getConfig.name) {
+                name += " " + getConfig.name
+              }
+            } 
+
+            type = getConfig.type || type;
+            color = getConfig.color || color;
+            group = getConfig.group || group;
+
+            var outputStyle = methods.outputStyle(color);
+
+            if (group){
+              if (settings.collapsed) {
+                this.groupCollapsed("%c" + name, outputStyle);
+              } else {
+                this.group("%c" + name, outputStyle);
+              }
+
+              this[type].apply(this, arguments);
+
+              this.groupEnd();
+
             } else {
-              this.configs = {};
+              var param = arguments;
+              var outparam = [];
+
+              for (var key in param) {
+                if (param.hasOwnProperty(key)) {
+                  outparam.push(param[key]);
+                }
+              }
+
+              this[type]("%c" + name, outputStyle, outparam);
             }
-
-            var configName = name;
-            if (getConfig.name !== undefined) {
-              configName += " " + getConfig.name;
-            }
-
-            if (settings.collapsed) {
-              this.groupCollapsed("%c" + configName, methods.outputStyle(getConfig.color || color));
-            } else {
-              this.group("%c" + configName, methods.outputStyle(getConfig.color || color));
-            }
-
-            this[getConfig.type || type].apply(this, arguments);
-
-            this.groupEnd();
-
-            return this;
           };
         })(
           member.name,
           member.color,
-          member.type
+          member.type,
+          member.group
         );
       }
 
       //////////////////////////////////////////////////////////////////////////
 
       console["color"] = function (content, color) {
+        if (methods.filterConsole(settings, "color")) return;
+
         if (content === "") return;
 
-        color = color || "#f60";
-        this.log("%c" + content, "color:" + color);
+        this.log("%c" + content, "color:" + (color || "#f60"));
       };
+
+      //////////////////////////////////////////////////////////////////////////
+
+      // console["tag"] = function (content, color) {
+      //   if (methods.filterConsole(settings, "color")) return;
+
+      //   if (content === "") return;
+      //   this.trace(
+      //     "%c" + "tag",
+      //     methods.outputStyle(color || "#66cccc"), 
+      //     (function (){
+      //       return content;
+      //     })()
+      //   );
+      //   // this.trace(content);
+      // };
 
       //////////////////////////////////////////////////////////////////////////
 
@@ -167,10 +190,11 @@ var consoleshow = {
 
         if (methods.filterConsole(settings, name)) return;
 
+        var outputStyle = methods.outputStyle(plus.color || "#d2eafb")
         if (settings.collapsed) {
-          this.groupCollapsed("%c" + name, methods.outputStyle(plus.color || "#d2eafb"));
+          this.groupCollapsed("%c" + name, outputStyle);
         } else {
-          this.group("%c" + name, methods.outputStyle(plus.color || "#d2eafb"));
+          this.group("%c" + name, outputStyle);
         }
 
         switch (typeof plus.content) {
@@ -199,19 +223,13 @@ var consoleshow = {
     }
   },
   methods: {
-    getInlineConfig: function(param, config) {
+    getConfig: function(param, config) {
       var paramLength = param.length;
 
       if (paramLength > 1 && param[paramLength - 1].config !== undefined) {
         var paramConfig = param[paramLength - 1].config;
 
-        for (var i in paramConfig) {
-          if (paramConfig.hasOwnProperty(i)) {
-            config[i] = paramConfig[i];
-          }
-        }
-
-        return config;
+        return paramConfig;
       }
       return '';
     },

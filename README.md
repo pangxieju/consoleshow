@@ -27,6 +27,7 @@ consoleshow
 * console.block ：输出块，组件相关信息
 * console.color ：修改打印颜色
 * console.plus  ：自定义输出信息
+* console.tag   ：输出标签
 
 ```js
   // 默认初始化
@@ -61,10 +62,6 @@ consoleshow
     }]
   });
 
-  // 内联配置
-  window.consoleshow.config({
-    inlineConfig: true  // 用于设置内联，链式设置
-  });
 ```
 #### 注意：
 
@@ -102,7 +99,7 @@ url 过滤参数会覆盖初始化参数里的过滤信息。
 
   console.test('This is test 1.', 'This is test 1.1.', 'This is test 1.2.');
 
-  // 内联配置(默认内联配置)
+  // 内联配置
   console.test('This is test 2.', {
     config: {
       "name": "@test1",  // 用于控制过滤 console 标记，默认为 test
@@ -111,22 +108,12 @@ url 过滤参数会覆盖初始化参数里的过滤信息。
     }
   });
 
-  // 链式配置
-  console.config({
-    "name": "@test1",  // 用于控制过滤 console 标记，默认为 test
-    "type": "log",     // console 默认命令名，默认为 log
-    "color": "#f50"    // 标题颜色，默认色 #ddd
-  }).test('This is test 2.');
 ```
 #### 注意：
 
 在 webpack 中可以配置是否在正式代码中过滤 console ；一般开发环境是要显示 console 方便调试，正式不显示；相关配置如下：
 
 ```js
-   // 内联配置
-  window.consoleshow.config({
-    inlineConfig: false  // 开启链式配置，相应内联配置无效
-  });
 
   // webpack2-3x 入口配置
   entry: {
@@ -139,7 +126,7 @@ url 过滤参数会覆盖初始化参数里的过滤信息。
   // webpack2-3x UglifyJsPlugin 配置
   compressor: {
     drop_console: true, // 清除 console
-    pure_funcs: ['window.consoleshow.config', 'console.config' + .命令名] // 打包过滤
+    pure_funcs: ['window.consoleshow.config'] // 打包过滤
   }
 ```
 
