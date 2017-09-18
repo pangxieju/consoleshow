@@ -83,10 +83,10 @@ var consoleshow = {
 
     var urlCollapsed = getUrlVal("console.collapsed");
 
-    if (urlCollapsed || urlCollapsed === "") {
-      settings.collapsed = true;
-    } else {
+    if (urlCollapsed === "false") {
       settings.collapsed = false;
+    } else {
+      settings.collapsed = true;
     }
 
     // Processing extended information.
@@ -124,6 +124,18 @@ var consoleshow = {
       var extend = this.settings.extend;
       var member = {};
 
+      //////////////////////////////////////////////////////////////////////////
+
+      console["color"] = function (content, color) {
+        if (methods.filterConsole(settings, "color")) return;
+
+        if (content === "") return;
+
+        this.log("%c" + content, "color:" + (color || "#f60"));
+      };
+
+      //////////////////////////////////////////////////////////////////////////
+
       for (var i = 0; i < extend.length; i++) {
         var member = extend[i];
 
@@ -138,11 +150,7 @@ var consoleshow = {
         (function (name, color, type, group, code) {
           console[name] = function () {
             var getConfig = methods.getConfig(arguments, member);
-
-            // Filter name.
-            if (methods.filterConsole(settings, name + getConfig.name)) return;
-
-            if (!methods.isEmptyObject(getConfig)) {
+            if (methods.isEmptyObject(getConfig)) {
               arguments.length = arguments.length - 1;
 
               if (getConfig.name) {
@@ -150,45 +158,21 @@ var consoleshow = {
               }
             }
 
+            // Filter name.
+            if (methods.filterConsole(settings, name)) return;
+
             type = getConfig.type || type;
             color = getConfig.color || color;
             group = getConfig.group || group;
             code = getConfig.code || code;
-
-            var outputStyle = methods.outputStyle(color);
-
-            if (group){
-              if (settings.collapsed) {
-                this.groupCollapsed("%c" + name, outputStyle);
-              } else {
-                this.group("%c" + name, outputStyle);
-              }
-
+            // console.log(name, color, type, group, code);
+  
+            if (group) {
+              var isCollapsed = settings.collapsed ? "groupCollapsed" : "group";
+              this[isCollapsed]("%c" + name, methods.outputStyle(color));
+       
               if (code) {
-                for (var key in arguments) {
-                  if (arguments.hasOwnProperty(key)) {
-                    var codeBlock = arguments[key];
-
-                    switch (typeof codeBlock) {
-                      case "function":
-                        codeBlock();
-                        break;
-                      case "object":
-                        this[plus.type](codeBlock);
-                        break;
-                      case "string":
-                        if (plus.type === "table") {
-                          this.log(codeBlock);
-                        } else {
-                          this[plus.type](codeBlock);
-                        }
-                        break;
-                      default:
-                        this.log(codeBlock);
-                        break;
-                    }
-                  }
-                }
+                methods.runCode(arguments, type, this);
               } else {
                 this[type].apply(this, arguments);
               }
@@ -216,65 +200,37 @@ var consoleshow = {
           member.code
         );
       }
-
-      //////////////////////////////////////////////////////////////////////////
-
-      console["color"] = function (content, color) {
-        if (methods.filterConsole(settings, "color")) return;
-
-        if (content === "") return;
-
-        this.log("%c" + content, "color:" + (color || "#f60"));
-      };
-
-      //////////////////////////////////////////////////////////////////////////
-
-      console["plus"] = function (param) {
-        var plus = {
-          name: param.name || "",
-          type: consoleKey.indexOf(param.type) !== -1 ? param.type : "log",
-          color: param.color || "#d2eafb",
-          content: param.content
-        };
-
-        var name = 'plus' + ' ' + plus.name;
-
-        if (methods.filterConsole(settings, name)) return;
-
-        var outputStyle = methods.outputStyle(plus.color || "#d2eafb");
-
-        if (settings.collapsed) {
-          this.groupCollapsed("%c" + name, outputStyle);
-        } else {
-          this.group("%c" + name, outputStyle);
-        }
-
-        switch (typeof plus.content) {
-          case "function":
-            plus.content();
-            break;
-          case "object":
-            this[plus.type](plus.content);
-            break;
-          case "string":
-            if (plus.type === "table") {
-              this.log(plus.content);
-            } else {
-              this[plus.type](plus.content);
-            }
-            break;
-          default:
-            this.log(plus.content);
-            break;
-        }
-
-        this.groupEnd();
-      };
     } catch (err) {
       console.warn(err);
     }
   },
   methods: {
+    runCode: function (param, type, This) {
+      for (var key in param) {
+        if (param.hasOwnProperty(key)) {
+          var codeBlock = param[key];
+
+          switch (typeof codeBlock) {
+            case "function":
+              codeBlock();
+              break;
+            case "object":
+              This[type](codeBlock);
+              break;
+            case "string":
+              if (type === "table") {
+                This.log(codeBlock);
+              } else {
+                This[type](codeBlock);
+              }
+              break;
+            default:
+              This.log(codeBlock);
+              break;
+          }
+        }
+      }
+    },
     getConfig: function (param, config) {
       var paramLength = param.length;
 

@@ -101,7 +101,7 @@
   SetTestHTML();
 
   window.consoleshow.config({
-    collapsed: false, // 是否折叠 console
+    // collapsed: false, // 是否折叠 console
     clear: true
   });
 
@@ -135,40 +135,47 @@
 
   console.block('This is block 1.');
 
-  console.plus({
-    "name": "demo1",
-    "content": "This is demo 1."
-  });
+  // console.plus({
+  //   "name": "demo1",
+  //   "content": "This is demo 1."
+  // });
 
   // 注意：当 content 参数为function 时，type 参数无效；
-  console.plus({
-    "name": "demo2",
-    "type": "table",
-    "content": "This is demo 2."
-  });
+  // console.plus({
+  //   "name": "demo2",
+  //   "type": "table",
+  //   "content": "This is demo 2."
+  // });
 
-  console.plus({
-    "name": "demo2.1",
-    "type": "table",
-    "content": [
-      {a: 1, b: 1},
-      {a: 2, b: 2},
-      {a: 3, b: 3},
-      {a: 4, b: 4}
-    ]
-  });
-
-  console.plus({
-    "name": "demo3",
-    "content": function() {
-      console.log("This is demo 3");
-
-      console.color('This is color.');
-      console.color('This is color.', "#f00");
-
-      console.event('This is event 1.');
+  // console.plus({
+  //   "name": "demo2.1",
+  //   "type": "table",
+  //   "content": [
+  //     {a: 1, b: 1},
+  //     {a: 2, b: 2},
+  //     {a: 3, b: 3},
+  //     {a: 4, b: 4}
+  //   ]
+  // });
+  console.plus(function (){
+   console.log(42345234342);
+   console.log("345345345345");
+  },{
+    config: {
+      name: "34234"
     }
-  });
+  })
+  // console.plus({
+  //   "name": "demo3",
+  //   "content": function() {
+  //     console.log("This is demo 3");
+
+  //     console.color('This is color.');
+  //     console.color('This is color.', "#f00");
+
+  //     console.event('This is event 1.');
+  //   }
+  // });
 
   function SetTestHTML() {
     var testLink = [
