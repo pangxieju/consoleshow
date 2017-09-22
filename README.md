@@ -21,13 +21,14 @@ consoleshow
 
 扩展命令：
 
-* console.test  ：普通输出
-* console.api   ：输出接口相关信息
-* console.event ：输出事件相关信息
-* console.block ：输出块，组件相关信息
 * console.color ：修改打印颜色
-* console.plus  ：自定义输出信息
+* console.api   ：输出接口相关信息
+* console.block ：输出块，组件相关信息
+* console.event ：输出事件相关信息
+* console.data  ：输出数据信息
 * console.tag   ：输出标签
+* console.test  ：普通输出
+* console.plus  ：自定义输出信息
 
 ```js
   // 默认初始化
@@ -91,7 +92,7 @@ url 过滤参数会覆盖初始化参数里的过滤信息。
 
 ### 扩展命令
 
-1、test, api, event, block 命令;
+1、api, block, event, data, tag, test, plus 命令;
 
 ```js
   // test 为扩展命令名
@@ -108,7 +109,41 @@ url 过滤参数会覆盖初始化参数里的过滤信息。
     }
   });
 
+  console.plus("This is demo 1.");
+
+  console.plus([
+    {a: 1, b: 1},
+    {a: 2, b: 2},
+    {a: 3, b: 3},
+    {a: 4, b: 4}
+  ], {
+    config: {
+      "name": "demo2",
+      "type": "table",
+    }
+  });
+
+  console.plus(function () {
+    console.log("This is demo 3");
+    console.color('This is color.');
+    console.color('This is color.', "#f00");
+    console.event('This is event 1.');
+  },
+  {
+    config: {
+      "name": "demo3"
+    }
+  })
 ```
+
+2、color 命令：console.color(string, color);
+
+```js
+  console.color('This is color.');
+
+  console.color('This is color.', "#f00");
+```
+
 #### 注意：
 
 在 webpack 中可以配置是否在正式代码中过滤 console ；一般开发环境是要显示 console 方便调试，正式不显示；相关配置如下：
@@ -130,35 +165,5 @@ url 过滤参数会覆盖初始化参数里的过滤信息。
   }
 ```
 
-2、color 命令：console.color(string, color);
-
-```js
-  console.color('This is color.');
-
-  console.color('This is color.', "#f00");
-```
-
-3、plus 命令：console.plus({options});
-
-```js
-  console.plus({
-    "name": "demo1",
-    "content": "This is demo 1."
-  })
-
-  // 注意：当 content 参数为function 时，type 参数无效；
-  console.plus({
-    "name": "demo2",
-    "type": "table",
-    "content": "This is demo 2."
-  })
-
-  console.plus({
-    "name": "demo3",
-    "content": function() {
-      console.log("This is demo 3");
-    }
-  })
-```
 ## License
 This content is released under the [MIT](http://opensource.org/licenses/MIT) License.

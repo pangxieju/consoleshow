@@ -17,18 +17,6 @@ var consoleshow = {
     // Default extended data.
     var defaultExtend = [
       {
-        name: "test",
-        color: "#ddd",
-        group: true,
-        code: false
-      },
-      {
-        name: "event",
-        color: "#ffffcc",
-        group: true,
-        code: false
-      },
-      {
         name: "api",
         color: "#ccffcc",
         group: true,
@@ -37,6 +25,12 @@ var consoleshow = {
       {
         name: "block",
         color: "#ffcccc",
+        group: true,
+        code: false
+      },
+      {
+        name: "event",
+        color: "#ffffcc",
         group: true,
         code: false
       },
@@ -51,6 +45,12 @@ var consoleshow = {
         type: "trace",
         color: "#66cccc",
         group: false,
+        code: false
+      },
+      {
+        name: "test",
+        color: "#ddd",
+        group: true,
         code: false
       },
       {
@@ -121,11 +121,6 @@ var consoleshow = {
     var consoleKey = methods.getConsoleKey();
 
     try {
-      var extend = this.settings.extend;
-      var member = {};
-
-      //////////////////////////////////////////////////////////////////////////
-
       console["color"] = function (content, color) {
         if (methods.filterConsole(settings, "color")) return;
 
@@ -135,6 +130,9 @@ var consoleshow = {
       };
 
       //////////////////////////////////////////////////////////////////////////
+
+      var extend = this.settings.extend;
+      var member = {};
 
       for (var i = 0; i < extend.length; i++) {
         var member = extend[i];
@@ -147,30 +145,51 @@ var consoleshow = {
           code: member.code ? true : false
         };
 
-        (function (name, color, type, group, code) {
-          console[name] = function () {
-            var getConfig = methods.getConfig(arguments, member);
+        (function (defaultConfig) {
+
+          console[defaultConfig.name] = function () {
+            // Get inline config.
+            var getConfig = methods.getConfig(arguments);
+
             if (methods.isEmptyObject(getConfig)) {
               arguments.length = arguments.length - 1;
+            }
 
-              if (getConfig.name) {
-                name += " " + getConfig.name;
-              }
+            // Get config name;
+            var name = defaultConfig.name;
+            if (getConfig.name !== undefined) {
+              name += " " + getConfig.name;
             }
 
             // Filter name.
             if (methods.filterConsole(settings, name)) return;
 
-            type = getConfig.type || type;
-            color = getConfig.color || color;
-            group = getConfig.group || group;
-            code = getConfig.code || code;
-            // console.log(name, color, type, group, code);
-  
+            var type = defaultConfig.type;
+            if (getConfig.type !== undefined) {
+              type = getConfig.type;
+            }
+
+            var color = defaultConfig.color;
+            if (getConfig.color !== undefined) {
+              color = getConfig.color;
+            }
+
+            var group = defaultConfig.group;
+            if (getConfig.group !== undefined) {
+              group = getConfig.group;
+            }
+
+            var code = defaultConfig.code;
+            if (getConfig.code !== undefined) {
+              code = getConfig.code;
+            }
+
+            var outputStyle = methods.outputStyle(color);
+
             if (group) {
               var isCollapsed = settings.collapsed ? "groupCollapsed" : "group";
-              this[isCollapsed]("%c" + name, methods.outputStyle(color));
-       
+              this[isCollapsed]("%c" + name, outputStyle);
+
               if (code) {
                 methods.runCode(arguments, type, this);
               } else {
@@ -181,24 +200,28 @@ var consoleshow = {
 
             } else {
               var param = arguments;
-              var outparam = [];
+              var outparam = ["%c" + name, outputStyle];
 
               for (var key in param) {
-                if (param.hasOwnProperty(key)) {
+                if (
+                  param.hasOwnProperty(key) &&
+                  !methods.isEmptyObject(param[key].config)
+                ) {
                   outparam.push(param[key]);
                 }
               }
 
-              this[type]("%c" + name, outputStyle, outparam);
+              for (var i = 0; i < outparam.length; i++) {
+                param[i] = outparam[i];
+              }
+
+              param.length = outparam.length;
+
+              this[type].apply(this, param);
+
             }
           };
-        })(
-          member.name,
-          member.color,
-          member.type,
-          member.group,
-          member.code
-        );
+        })(member);
       }
     } catch (err) {
       console.warn(err);
@@ -207,16 +230,19 @@ var consoleshow = {
   methods: {
     runCode: function (param, type, This) {
       for (var key in param) {
-        if (param.hasOwnProperty(key)) {
+
+        if (param.hasOwnProperty(key) && !this.isEmptyObject(param[key].config)) {
           var codeBlock = param[key];
 
           switch (typeof codeBlock) {
             case "function":
               codeBlock();
               break;
+
             case "object":
               This[type](codeBlock);
               break;
+
             case "string":
               if (type === "table") {
                 This.log(codeBlock);
@@ -224,19 +250,20 @@ var consoleshow = {
                 This[type](codeBlock);
               }
               break;
+
             default:
               This.log(codeBlock);
               break;
+
           }
         }
       }
     },
-    getConfig: function (param, config) {
+    getConfig: function (param) {
       var paramLength = param.length;
 
       if (paramLength > 1 && param[paramLength - 1].config !== undefined) {
         var paramConfig = param[paramLength - 1].config;
-
         return paramConfig;
       }
       return {};

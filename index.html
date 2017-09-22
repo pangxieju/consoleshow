@@ -105,19 +105,7 @@
     clear: true
   });
 
-   // test 为扩展命令名
-  console.test('This is test 1.');
-
-  console.test('This is test 1.', 'This is test 1.1.', 'This is test 1.2.');
-
-  console.test('This is test 2.', {
-    config: {
-      "name": "@test1", // 用于控制过滤 console 标记，默认为 test
-      "type": "log",    // console 默认命令名，默认为 log
-      "color": "#f50"   // 标题颜色，默认色 #ddd
-    }
-  });
-
+  // api
   console.api('This is api 1.');
 
   console.api([
@@ -131,51 +119,74 @@
     }
   });
 
-  console.event('This is event 1.');
-
+  // block
   console.block('This is block 1.');
 
-  // console.plus({
-  //   "name": "demo1",
-  //   "content": "This is demo 1."
-  // });
+  // event
+  console.event('This is event 1.');
 
-  // 注意：当 content 参数为function 时，type 参数无效；
-  // console.plus({
-  //   "name": "demo2",
-  //   "type": "table",
-  //   "content": "This is demo 2."
-  // });
+  // data
+  console.data([
+    {a: 1, b: 1},
+    {a: 2, b: 2},
+    {a: 3, b: 3},
+    {a: 4, b: 4}
+  ])
 
-  // console.plus({
-  //   "name": "demo2.1",
-  //   "type": "table",
-  //   "content": [
-  //     {a: 1, b: 1},
-  //     {a: 2, b: 2},
-  //     {a: 3, b: 3},
-  //     {a: 4, b: 4}
-  //   ]
-  // });
-  console.plus(function (){
-   console.log(42345234342);
-   console.log("345345345345");
-  },{
+
+  // tag
+  console.tag("This is demo 1", {
     config: {
-      name: "34234"
+      name: "demo1"
+    }
+  });
+
+  console.tag(JSON.stringify(
+    {a: 1, b: 2}
+  ));
+
+  // test
+  console.test('This is test 2.', {
+    config: {
+      "name": "@test1", // 用于控制过滤 console 标记，默认为 test
+      "type": "log",    // console 默认命令名，默认为 log
+      "color": "#f50"   // 标题颜色，默认色 #ddd
+    }
+  });
+
+  console.test('This is test 1.');
+
+  console.test('This is test 1.', 'This is test 1.1.', 'This is test 1.2.');
+
+
+
+  // plus
+  console.plus("This is demo 1.");
+
+  console.plus([
+    {a: 1, b: 1},
+    {a: 2, b: 2},
+    {a: 3, b: 3},
+    {a: 4, b: 4}
+  ], {
+    config: {
+      "name": "demo2",
+      "type": "table",
+    }
+  });
+
+  console.plus(function () {
+    console.log("This is demo 3");
+    console.color('This is color.');
+    console.color('This is color.', "#f00");
+    console.event('This is event 1.');
+  }, {
+    config: {
+      "name": "demo3"
     }
   })
-  // console.plus({
-  //   "name": "demo3",
-  //   "content": function() {
-  //     console.log("This is demo 3");
 
-  //     console.color('This is color.');
-  //     console.color('This is color.', "#f00");
-
-  //     console.event('This is event 1.');
-  //   }
-  // });
+  //////////////////////////////////////////////////////////////////////////////
 
   function SetTestHTML() {
     var testLink = [
@@ -203,7 +214,6 @@
         param: "console.show=***",
         explain: "隐藏全部（参数不包含或等于设置的即可）"
       }
-
     ];
 
     var url = window.location.origin + window.location.pathname;
