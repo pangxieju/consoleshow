@@ -1,5 +1,5 @@
 /*!
- *  consoleShow v1.3.0 By pangxieju
+ *  consoleShow v1.4.0 By pangxieju
  *  Github: https://github.com/pangxieju/consoleshow
  *  MIT Licensed.
  */
@@ -146,7 +146,6 @@ var consoleshow = {
         };
 
         (function (defaultConfig) {
-
           console[defaultConfig.name] = function () {
             // Get inline config.
             var getConfig = methods.getConfig(arguments);
@@ -305,16 +304,19 @@ var consoleshow = {
     },
     setColorRgb: function (sColor) {
       var reg = /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/;
-      sColor = sColor.toLowerCase();
+      sColor = sColor ? sColor.toLowerCase() : "#fff";
+
       if (sColor && reg.test(sColor)) {
         if (sColor.length === 4) {
           var sColorNew = "#";
+
           for (var i = 1; i < 4; i += 1) {
             sColorNew += sColor.slice(i, i + 1).concat(sColor.slice(i, i + 1));
           }
           sColor = sColorNew;
         }
         var sColorChange = [];
+
         for (var ii = 1; ii < 7; ii += 2) {
           sColorChange.push(parseInt("0x" + sColor.slice(ii, ii + 2)));
         }
@@ -335,8 +337,10 @@ var consoleshow = {
     getUrlVal: function (name, url) {
       if (!url) url = window.location.href;
       name = name.replace(/[\[\]]/g, "\\$&");
+
       var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)");
       var results = regex.exec(url);
+
       if (!results) return null;
       if (!results[2]) return '';
       return decodeURIComponent(results[2].replace(/\+/g, " "));

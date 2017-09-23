@@ -57,9 +57,11 @@ consoleshow
   // 扩展命令
   window.consoleshow.config({
     extend: [{
-      name: "api",     // 用于控制过滤 console 标记，默认为 test
-      type: "table",   // console 默认命令名，默认为 log
-      color: "#fff3cf" // 标题颜色，默认色 #ddd
+      name: "api",      // 用于控制过滤 console 标记，默认为 test
+      type: "table",    // console 默认命令名，默认为 log
+      color: "#fff3cf", // 标题颜色，默认色 #ddd
+      group: true,      // 是否使用组显示 console 日志， 默认 false
+      code: false       // 是否支持 function，默认false
     }]
   });
 
@@ -70,13 +72,15 @@ consoleshow
 
 - console 命令："debug", "error", "info", "log", "warn", "dir", "dirxml", "table", "trace", "group", "groupCollapsed", "groupEnd", "clear", "count", "assert", "markTimeline", "profile", "profileEnd", "timeline", "timelineEnd", "time", "timeEnd", "timeStamp", "memory"；（Chrom 浏览器）
 
-- 扩展命令： "test", "event", "api", "block", "color", "plus"；
+- 扩展命令： "color", "api", "block", "event", "data", "tag","test",  "plus"；
 
-- 如果与 console 命令名相同，name 会取默认参数 test；如果与扩展命令名相同，会覆盖重名扩展设置。
+- 如果与 console 命令名相同，name 会取默认参数 test；如果与扩展命令名相同，会覆盖重名扩展设置；
 
-2、扩展 color 属性只支持 16 进制颜色。
+2、扩展 color 属性只支持 16 进制颜色；
 
-3、扩展 type 参数主要设置输出的控制台命令名，例如：table 等于 console.table。
+3、扩展 type 参数主要设置输出的控制台命令名，例如：table 等于 console.table；
+
+4、扩展 group 参数设置显示 console 是否为 group，用于折叠显示日志；
 
 url 过滤 console：
 
@@ -86,6 +90,19 @@ url 过滤 console：
 
   // 隐藏当前页面指定 console
   http://xxx.com?console.hide=name_1,name_2
+```
+
+url 展开/折叠 console
+```
+  // 展开group console
+  http://xxx.com?console.collapsed=false
+
+  // 折叠group console
+  http://xxx.com?console.collapsed=true
+
+  // 组合过滤
+  http://xxx.com?console.collapsed=false&console.show=name_1,name_2
+  http://xxx.com?console.collapsed=true&console.hide=name_1,name_2
 ```
 
 url 过滤参数会覆盖初始化参数里的过滤信息。
